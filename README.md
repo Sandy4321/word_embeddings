@@ -1,9 +1,9 @@
 Evaluation of word embeddings
 =============================
 
-Code for the blog post evaluating word2vec, GloVe, SPPMI and SPPMI-SVD methods:
+Original post: [Making sense of word2vec](http://radimrehurek.com/2014/12/making-sense-of-word2vec/).
 
-[Making sense of word2vec](http://radimrehurek.com/2014/12/making-sense-of-word2vec/).
+Code for the blog post evaluating python implementations of [word2vec](https://github.com/piskvorky/gensim), [GloVe](https://github.com/maciejkula/glove-python) and GloVe implementation in [text2vec](https://github.com/dselivanov/text2vec).
 
 Run `run_all.sh` to run all experiments. Logs with results will be stored in the data directory.
 
