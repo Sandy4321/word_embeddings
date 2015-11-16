@@ -18,5 +18,3 @@ mkdir -p $outdir 2> /dev/null
 
 time python ./run_word2vec.py $input_corpus $questions $outdir &> $outdir/word2vec.log
 time python ./run_glove.py $input_corpus $questions $outdir &> $outdir/glove.log
-time python ./run_ppmi.py $input_corpus $questions $outdir &> $outdir/ppmi.log
-time python ./run_svd.py $input_corpus $questions $outdir &> $outdir/svd.log

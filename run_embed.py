@@ -39,10 +39,6 @@ NEGATIVE = 10  # 0 for plain hierarchical softmax (no negative sampling)
 
 logger = logging.getLogger("run_embed")
 
-import pyximport; pyximport.install(setup_args={'include_dirs': numpy.get_include()})
-from cooccur_matrix import get_cooccur
-
-
 def most_similar(model, positive=[], negative=[], topn=10):
     """
     Find the top-N most similar words. Positive words contribute positively towards the
@@ -165,58 +161,9 @@ def accuracy(model, questions, ok_words=None):
     sections.append(total)
     return sections
 
-
-def raw2ppmi(cooccur, word2id, k_shift=1.0):
-    """
-    Convert raw counts from `get_coccur` into positive PMI values (as per Levy & Goldberg),
-    in place.
-
-    The result is an efficient stream of sparse word vectors (=no extra data copy).
-
-    """
-    logger.info("computing PPMI on co-occurence counts")
-
-    # following lines a bit tedious, as we try to avoid making temporary copies of the (large) `cooccur` matrix
-    marginal_word = cooccur.sum(axis=1)
-    marginal_context = cooccur.sum(axis=0)
-    cooccur /= marginal_word[:, None]  # #(w, c) / #w
-    cooccur /= marginal_context  # #(w, c) / (#w * #c)
-    cooccur *= marginal_word.sum()  # #(w, c) * D / (#w * #c)
-    numpy.log(cooccur, out=cooccur)  # PMI = log(#(w, c) * D / (#w * #c))
-
-    logger.info("shifting PMI scores by log(k) with k=%s" % (k_shift, ))
-    cooccur -= numpy.log(k_shift)  # shifted PMI = log(#(w, c) * D / (#w * #c)) - log(k)
-
-    logger.info("clipping PMI scores to be non-negative PPMI")
-    cooccur.clip(0.0, out=cooccur)  # SPPMI = max(0, log(#(w, c) * D / (#w * #c)) - log(k))
-
-    logger.info("normalizing PPMI word vectors to unit length")
-    for i, vec in enumerate(cooccur):
-        cooccur[i] = matutils.unitvec(vec)
-
-    return matutils.Dense2Corpus(cooccur, documents_columns=False)
-
-
-class PmiModel(object):
-    def __init__(self, corpus):
-        # serialize PPMI vectors into an explicit sparse CSR matrix, in RAM, so we can do
-        # dot products more easily
-        self.word_vectors = matutils.corpus2csc(corpus).T
-
-
-class SvdModel(object):
-    def __init__(self, corpus, id2word, s_exponent=0.0):
-        logger.info("calculating truncated SVD")
-        lsi = gensim.models.LsiModel(corpus, id2word=id2word, num_topics=DIM, chunksize=1000)
-        self.singular_scaled = lsi.projection.s ** s_exponent
-        # embeddings = left singular vectors scaled by the (exponentiated) singular values
-        self.word_vectors = lsi.projection.u * self.singular_scaled
-
-
 if __name__ == "__main__":
     logging.basicConfig(format='%(asctime)s : %(threadName)s : %(levelname)s : %(message)s', level=logging.INFO)
     logger.info("running %s" % " ".join(sys.argv))
-    from run_embed import PmiModel, SvdModel  # for pickle
 
     # check and process cmdline input
     program = os.path.basename(sys.argv[0])
@@ -238,7 +185,7 @@ if __name__ == "__main__":
         word2id = utils.unpickle(outf('word2id'))
     else:
         logger.info("dictionary not found, creating")
-        id2word = gensim.corpora.Dictionary(sentences(), prune_at=10000000)
+        id2word = gensim.corpora.Dictionary(sentences(), prune_at=None)
         id2word.filter_extremes(keep_n=TOKEN_LIMIT)  # filter out too freq/infreq words
         word2id = dict((v, k) for k, v in id2word.iteritems())
         utils.pickle(word2id, outf('word2id'))
@@ -285,40 +232,6 @@ if __name__ == "__main__":
             model.word2id = dict((utils.to_unicode(w), id) for w, id in model.dictionary.iteritems())
             model.id2word = gensim.utils.revdict(model.word2id)
             utils.pickle(model, outf('glove'))
-
-    if 'pmi' in program:
-        if os.path.exists(outf('pmi')):
-            logger.info("PMI model found, loading")
-            model = utils.unpickle(outf('pmi'))
-        else:
-            if not os.path.exists(outf('pmi_matrix.mm')):
-                logger.info("PMI matrix not found, creating")
-                if os.path.exists(outf('cooccur.npy')):
-                    logger.info("raw cooccurrence matrix found, loading")
-                    raw = numpy.load(outf('cooccur.npy'))
-                else:
-                    logger.info("raw cooccurrence matrix not found, creating")
-                    raw = get_cooccur(corpus(), word2id, window=WINDOW, dynamic_window=False)
-                    numpy.save(outf('cooccur.npy'), raw)
-                # store the SPPMI matrix in sparse Matrix Market format on disk
-                gensim.corpora.MmCorpus.serialize(outf('pmi_matrix.mm'), raw2ppmi(raw, word2id, k_shift=NEGATIVE or 1))
-                del raw
-            logger.info("PMI model not found, creating")
-            model = PmiModel(gensim.corpora.MmCorpus(outf('pmi_matrix.mm')))
-            model.word2id = word2id
-            model.id2word = id2word
-            utils.pickle(model, outf('pmi'))
-
-    if 'svd' in program:
-        if os.path.exists(outf('svd')):
-            logger.info("SVD model found, loading")
-            model = utils.unpickle(outf('svd'))
-        else:
-            logger.info("SVD model not found, creating")
-            model = SvdModel(gensim.corpora.MmCorpus(outf('pmi_matrix.mm')), id2word, s_exponent=0.0)
-            model.word2id = word2id
-            model.id2word = id2word
-            utils.pickle(model, outf('svd'))
 
     logger.info("evaluating accuracy")
     print accuracy(model, q_file, word2id)  # output result to stdout as well
