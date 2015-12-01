@@ -1,11 +1,13 @@
 Evaluation of word embeddings
 =============================
 
-Original post: [Making sense of word2vec](http://radimrehurek.com/2014/12/making-sense-of-word2vec/).
+Code for the [blog post](http://dsnotes.com/blog/text2vec/2015/12/01/glove-enwiki/) evaluating implementations of [word2vec](https://github.com/piskvorky/gensim) in *gensim* and [GloVe](https://github.com/dselivanov/text2vec) in *text2vec*.
 
-Code for the blog post evaluating python implementations of [word2vec](https://github.com/piskvorky/gensim), [GloVe](https://github.com/maciejkula/glove-python) and GloVe implementation in [text2vec](https://github.com/dselivanov/text2vec).
+## Running
 
-Run `run_all.sh` to run all experiments. Logs with results will be stored in the data directory.
+1. This will create vocabulary, train *text2vec* GloVe and evaluate it:
+    `bash -i -c "./memusg Rscript ./run_glove_text2vec.R ~/Downloads/datasets/enwiki_splits/ ~/Downloads/datasets/questions-words.txt  ./enwiki_dim=600_vocab=30k/"  > ./enwiki_dim=600_vocab=30k/glove.log 2>&1 &`
+2. This will train *gensim* and evaluate its accuracy: 
+`bash -i -c "./memusg python ./run_word2vec.py ~/Downloads/datasets/title_tokens.txt.gz ~/Downloads/datasets/questions-words.txt ./enwiki_dim=600_vocab=30k" > ./enwiki_dim=600_vocab=30k/word2vec.log 2>&1 &`
 
 To replicate my results from the blog article, download and preprocess Wikipedia using [this code](https://github.com/piskvorky/sim-shootout).
-You can use your own corpus though (the corpus path is a parameter to `run_all.sh`).
