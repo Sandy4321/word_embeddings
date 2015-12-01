@@ -10,4 +10,8 @@ Code for the [blog post](http://dsnotes.com/blog/text2vec/2015/12/01/glove-enwik
 2. This will train *gensim* and evaluate its accuracy: 
 `bash -i -c "./memusg python ./run_word2vec.py ~/Downloads/datasets/title_tokens.txt.gz ~/Downloads/datasets/questions-words.txt ./enwiki_dim=600_vocab=30k" > ./enwiki_dim=600_vocab=30k/word2vec.log 2>&1 &`
 
+## Pretrained vectors
+
+You can download pretrained vectors from my [google drive](https://drive.google.com/file/d/0By2BzucAKDF5YzgtM2t1am5tOE0/view?usp=sharing).
+
 To replicate my results from the blog article, download and preprocess Wikipedia using [this code](https://github.com/piskvorky/sim-shootout).
