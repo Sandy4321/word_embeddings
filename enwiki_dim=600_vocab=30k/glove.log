@@ -1,0 +1,44 @@
+Loading required package: methods
+[1] "2015-11-30 23:26:04 looking for existing corpus ..."
+[1] "2015-11-30 23:26:04 tcm found, reading it..."
+[1] "2015-11-30 23:26:10 training glove ..."
+2015-11-30 23:47:31 - epoch 1, expected cost 0.0668
+2015-12-01 00:09:05 - epoch 2, expected cost 0.0361
+2015-12-01 00:30:36 - epoch 3, expected cost 0.0301
+2015-12-01 00:52:05 - epoch 4, expected cost 0.0268
+2015-12-01 01:13:36 - epoch 5, expected cost 0.0243
+2015-12-01 01:35:05 - epoch 6, expected cost 0.0224
+2015-12-01 01:56:37 - epoch 7, expected cost 0.0209
+2015-12-01 02:18:08 - epoch 8, expected cost 0.0197
+2015-12-01 02:39:40 - epoch 9, expected cost 0.0187
+2015-12-01 03:01:12 - epoch 10, expected cost 0.0178
+2015-12-01 03:22:46 - epoch 11, expected cost 0.0172
+2015-12-01 03:44:20 - epoch 12, expected cost 0.0166
+2015-12-01 04:05:53 - epoch 13, expected cost 0.0161
+2015-12-01 04:27:27 - epoch 14, expected cost 0.0158
+2015-12-01 04:49:00 - epoch 15, expected cost 0.0154
+2015-12-01 05:10:33 - epoch 16, expected cost 0.0152
+2015-12-01 05:32:06 - epoch 17, expected cost 0.0150
+2015-12-01 05:53:39 - epoch 18, expected cost 0.0148
+2015-12-01 06:15:19 - epoch 19, expected cost 0.0146
+2015-12-01 06:37:27 - epoch 20, expected cost 0.0145
+[1] "2015-12-01 06:37:27 saving glove model ..."
+[1] "2015-12-01 06:37:51 reading questions ..."
+2015-12-01 06:37:52 -  13248 full questions found out of 19544 total
+[1] "2015-12-01 06:37:52 checking accuracy ..."
+2015-12-01 06:37:53 - capital-common-countries: correct 476 out of 506, accuracy = 0.9407
+2015-12-01 06:37:59 - capital-world: correct 2265 out of 2359, accuracy = 0.9602
+2015-12-01 06:37:59 - currency: correct 4 out of 86, accuracy = 0.0465
+2015-12-01 06:38:03 - city-in-state: correct 1828 out of 2330, accuracy = 0.7845
+2015-12-01 06:38:04 - family: correct 272 out of 306, accuracy = 0.8889
+2015-12-01 06:38:05 - gram1-adjective-to-adverb: correct 179 out of 650, accuracy = 0.2754
+2015-12-01 06:38:05 - gram2-opposite: correct 131 out of 272, accuracy = 0.4816
+2015-12-01 06:38:07 - gram3-comparative: correct 806 out of 930, accuracy = 0.8667
+2015-12-01 06:38:07 - gram4-superlative: correct 279 out of 506, accuracy = 0.5514
+2015-12-01 06:38:09 - gram5-present-participle: correct 445 out of 870, accuracy = 0.5115
+2015-12-01 06:38:11 - gram6-nationality-adjective: correct 1364 out of 1371, accuracy = 0.9949
+2015-12-01 06:38:14 - gram7-past-tense: correct 836 out of 1406, accuracy = 0.5946
+2015-12-01 06:38:15 - gram8-plural: correct 833 out of 1056, accuracy = 0.7888
+2015-12-01 06:38:16 - gram9-plural-verbs: correct 341 out of 600, accuracy = 0.5683
+2015-12-01 06:38:16 - OVERALL ACCURACY = 0.7593
+memusg: peak=8845128
